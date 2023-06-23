@@ -27,11 +27,6 @@ newmap = pyg.transform.scale(map, (int(width/1.6), int(height/1.4)))
 maplocation = map.get_rect()
 maplocation.center = width/2, height/1.4
 
-font = pyg.font.SysFont('Georgia',40,bold=True)
-surf = font.render('PLAY', True, 'white')
-button = pyg.Rect(200,200,130,60)
-
-playbutton = pyg.image.load("playbutton.png")
 # texts
 display_surface = pyg.display.set_mode((width, height)) 
 font = pyg.font.SysFont('georgia', 80)
@@ -49,6 +44,11 @@ text2 = font2.render('By: Amy Yang', True, "mediumpurple1")
 textRect2 = text.get_rect()
 textRect2.center = (width/0.9, height/1)
 
+# buttons
+font = pyg.font.SysFont('Georgia',40,bold=True)
+surf = font.render('PLAY', True, 'white')
+button = pyg.Rect(width/1.4,height/1.7,130,60)
+
 # main program
 while running:
     # background color
@@ -60,28 +60,28 @@ while running:
     w.blit(text2,textRect2)
     # update the screen
     pyg.display.flip()
+
+    # play button
+    a,b = pyg.mouse.get_pos()
+
+    if button.x <= a <= button.x + 110 and button.y <= b <= button.y +60:
+        pyg.draw.rect(w,(180,180,180),button )
+    else:
+        pyg.draw.rect(w, (110,110,110),button)
+    w.blit(surf,(button.x+5, button.y+5))
+
     # loop through the events
     for event in pyg.event.get():
         if event.type == pyg.MOUSEBUTTONDOWN:
                 if button.collidepoint(event.pos):
                     buttoncollide = True
-                    
         # check if the event is the X button 
         if event.type == pyg.QUIT:
             running = False
-
     if buttoncollide == True:
         w.fill("paleturquoise1")
         w.blit(newmap, maplocation)
-    a,b = pyg.mouse.get_pos()
-    if button.x <= a <= button.x + 110 and button.y <= b <= button.y +60:
-        pyg.draw.rect(w,(180,180,180),button )
-    else:
-        pyg.draw.rect(w, (110,110,110),button)
-    w.blit(surf,(button.x +5, button.y+5))
-    mouse = pyg.mouse.get_pos()
-    w.blit(playbutton , (width/1.8,height/2,140,40))
- 
+
     pyg.display.update()
     pyg.display.flip()
 
