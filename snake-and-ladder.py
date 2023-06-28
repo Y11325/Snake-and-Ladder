@@ -3,6 +3,7 @@
 import pygame as pyg
 from pygame.locals import *
 import random
+import time
 import math
 
 # variables
@@ -59,6 +60,11 @@ def scene3stuff():
     maplocation = map.get_rect()
     maplocation.center = width/2.5, height/2.1
     w.blit(newmap,maplocation)
+    gd = pyg.image.load("gamedie.png")
+    newgd = pyg.transform.scale(gd, (int(width/5), int(height/4.1)))
+    gdlocation = gd.get_rect()
+    gdlocation.center = width/1.08, height/2
+    w.blit(newgd,gdlocation)
 
 def playbutton():
     font = pyg.font.SysFont('roboto',65,bold=True)
@@ -67,9 +73,9 @@ def playbutton():
     button = pyg.Rect(width/1.4,height/1.7,150,150)
     a,b = pyg.mouse.get_pos()
     if button.x <= a <= button.x + 150 and button.y <= b <= button.y +150:
-        pyg.draw.rect(w,(20,170,250),button)
+        pyg.draw.rect(w,(255,182,193),button,border_radius=12)
     else:
-        pyg.draw.rect(w,(230,100,250),button)
+        pyg.draw.rect(w,(230,100,250),button,border_radius=12)
     w.blit(surf,(button.x+15, button.y+50))
 
 def twoPB():
@@ -79,9 +85,9 @@ def twoPB():
     twopb = pyg.Rect(width/2.5,height/3,210,60)
     a,b = pyg.mouse.get_pos()
     if twopb.x <= a <= twopb.x + 210 and twopb.y <= b <= twopb.y +60:
-        pyg.draw.rect(w,(20,170,250),twopb)
+        pyg.draw.rect(w,(255,200,130),twopb,border_radius=10)
     else:
-        pyg.draw.rect(w,(230,100,250),twopb)
+        pyg.draw.rect(w,(135,206,250),twopb,border_radius=10)
     w.blit(surf,(twopb.x+5, twopb.y+5))
     
 def threePB():
@@ -91,9 +97,9 @@ def threePB():
     threepb = pyg.Rect(width/2.5,height/2,210,60)
     a,b = pyg.mouse.get_pos()
     if threepb.x <= a <= threepb.x + 210 and threepb.y <= b <= threepb.y +60:
-        pyg.draw.rect(w,(20,170,250),threepb)
+        pyg.draw.rect(w,(189,252,201),threepb,border_radius=10)
     else:
-        pyg.draw.rect(w,(230,100,250),threepb)
+        pyg.draw.rect(w,(171,130,255),threepb,border_radius=10)
     w.blit(surf,(threepb.x+5, threepb.y+5))
 
 def fourPB():
@@ -103,17 +109,25 @@ def fourPB():
     fourpb = pyg.Rect(width/2.5,height/1.5 ,210,60)
     a,b = pyg.mouse.get_pos()
     if fourpb.x <= a <= fourpb.x + 210 and fourpb.y <= b <= fourpb.y +60:
-        pyg.draw.rect(w,(20,170,250),fourpb)
+        pyg.draw.rect(w,(255,165,79),fourpb,border_radius=10)
     else:
-        pyg.draw.rect(w,(230,100,250),fourpb)
+        pyg.draw.rect(w,(230,100,250),fourpb,border_radius=10)
     w.blit(surf,(fourpb.x+5, fourpb.y+5))
 
 def characters():
     global players
-    capybara()
-    cat()
-    dog()
-    duck()
+    if players == 2:
+        capybara()
+        cat()
+    elif players == 3:
+        capybara()
+        cat()
+        dog()
+    elif players == 4:
+        capybara()
+        cat()
+        dog()
+        duck()
 
 def capybara():
     cb = pyg.image.load("capybara.png")
@@ -139,6 +153,36 @@ def duck():
     ducklocation.center = width/2.5, height/1.1
     w.blit(duck,ducklocation)
 
+def gamedie():
+    font = pyg.font.SysFont('impact',65)
+    surf = font.render('ROLL', True, 'white')
+    global roll
+    roll = pyg.Rect(width/1.3,height/1.5 ,140,100)
+    a,b = pyg.mouse.get_pos()
+    if roll.x <= a <= roll.x + 140 and roll.y <= b <= roll.y +100:
+        pyg.draw.rect(w,(150,150,150),roll,border_radius=10)
+    else:
+        pyg.draw.rect(w,(100,100,100),roll,border_radius=10)
+    w.blit(surf,(roll.x+5, roll.y+5))
+
+def rollgd():
+    global players
+    if players == 2:
+        player1 = random.randint(1,6)
+        player2 = random.randint(1,6)
+        print(player1,player2)
+    elif players == 3:
+        player1 = random.randint(1,6)
+        player2 = random.randint(1,6)
+        player3 = random.randint(1,6)
+        print(player1,player2,player3)
+    elif players == 4:
+        player1 = random.randint(1,6)
+        player2 = random.randint(1,6)
+        player3 = random.randint(1,6)
+        player4 = random.randint(1,6)
+        print(player1,player2,player3,player4)
+
 # main program
 while running:
     if currentscene == scene1:
@@ -152,27 +196,36 @@ while running:
     elif currentscene == scene3:
         scene3stuff()
         characters()
+        gamedie()
 
-
-    for event in pyg.event.get():
-        if event.type == pyg.MOUSEBUTTONDOWN:
+    if currentscene == scene1:
+        for event in pyg.event.get():
+            if event.type == pyg.MOUSEBUTTONDOWN:
                 if button.collidepoint(event.pos):
-                    if currentscene == scene1:
-                        currentscene += 1
-                elif twopb.collidepoint(event.pos):
-                    if currentscene == scene2:
-                        currentscene += 1
-                        players = 2
+                    currentscene += 1
+            elif event.type == pyg.QUIT:
+                running = False
+    elif currentscene == scene2:
+        for event in pyg.event.get():
+            if event.type == pyg.MOUSEBUTTONDOWN:
+                if twopb.collidepoint(event.pos):
+                    currentscene += 1
+                    players = 2
                 elif threepb.collidepoint(event.pos):
-                    if currentscene == scene2:
-                        currentscene += 1
-                        players = 3
+                    currentscene += 1
+                    players = 3
                 elif fourpb.collidepoint(event.pos):
-                    if currentscene == scene2:
-                        currentscene += 1
-                        players = 4
-        if event.type == pyg.QUIT:
-            running = False
+                    currentscene += 1
+                    players = 4
+            elif event.type == pyg.QUIT:
+                running = False
+    elif currentscene == scene3:
+        for event in pyg.event.get():
+            if event.type == pyg.MOUSEBUTTONDOWN:
+                if roll.collidepoint(event.pos):
+                    rollgd()
+            elif event.type == pyg.QUIT:
+                running = False
 
     pyg.display.update()
     pyg.display.flip()
